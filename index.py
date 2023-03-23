@@ -2,8 +2,9 @@ import os
 
 import time
 import openai
+import json
 
-openai.api_key = "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"
+openai.api_key = "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"
 
 models = ["code-cushman-001", "code-davinci-002"]  
 
@@ -19,13 +20,13 @@ def multiplinput():
     code = '\n'.join(contents)
     return code
 
-def fixCode(purpose, attempt, model, code = ""):
+def fixCode(purpose, attempt, model, code = "", topp = 0.1):
     response = openai.Completion.create(
         model= models[model],
         prompt= code + purpose,
         temperature= 0,
-        max_tokens=2000,
-        top_p=0.1,
+        max_tokens=1900,
+        top_p=topp,
         frequency_penalty=1,
         presence_penalty=1
     )
@@ -38,11 +39,12 @@ def fixCode(purpose, attempt, model, code = ""):
 # fixCode("make a list of 5 strings in python that say 'dogs', 'cats', 'horse', 'rabbit', 'space', and the variable's name should be 'listing'", 0)
 
 def fix(purpose, models):
+    topp = 0.1
     satisfactory = False
     attempts = 0
     code = multiplinput()
     while satisfactory == False:
-        fixCode('"Fix this code in python"', attempts, models, code)
+        fixCode('"Fix this code in python"', attempts, models, code, topp)
         satisfactorychoice = print("That was the code! Was the code satisfactory? (y/N)")
         
         if satisfactorychoice == "y":
@@ -50,6 +52,7 @@ def fix(purpose, models):
         else:
             retrychoice = input("Sorry to hear that. Want to try again? (y/N)")
             if retrychoice == "y":
+                topp /= 10
                 continue
     print("Have a nice day!")
     
@@ -71,17 +74,19 @@ def prototype(purpose, models):
     
 
 def optimize(purpose, models):
+    topp = 0.1
     satisfactory = False
     attempts = 0
     code = multiplinput()
     while satisfactory == False:
-        fixCode('"Optimize this code"', attempts, models, code)
+        fixCode('"Optimize this code"', attempts, models, code, topp)
         satisfactorychoice = print("That was the code! Was the code satisfactory? (y/N)")
         if satisfactorychoice == "y":
             satisfactory = True
         else:
             retrychoice = input("Sorry to hear that. Want to try again? (y/N)")
             if retrychoice == "y":
+                topp /= 10
                 continue
     print("Have a nice day!")
 
