@@ -4,12 +4,24 @@ import openai
 
 openai.api_key = "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"
 
-models = ["code-cushman-001", "code-davinci-002"]
+models = ["code-cushman-001", "code-davinci-002"]  
 
-def fixCode(purpose, attempt, model):
+def multiplinput():
+    print("Please enter your code, and press Ctrl + D or Cmd + D once you are done")
+    contents = []
+    while True:
+        try:
+            line = input()
+        except EOFError:
+            break
+        contents.append(line)
+    code = '\n'.join(contents)
+    return code
+
+def fixCode(purpose, attempt, model, code = ""):
     response = openai.Completion.create(
         model= models[model],
-        prompt=purpose,
+        prompt= code + purpose,
         temperature=attempt,
         max_tokens=1024,
         top_p=1,
@@ -21,13 +33,15 @@ def fixCode(purpose, attempt, model):
     print(x)
 
 
+
 # fixCode("make a list of 5 strings in python that say 'dogs', 'cats', 'horse', 'rabbit', 'space', and the variable's name should be 'listing'", 0)
 
 def fix(purpose, models):
     satisfactory = False
     attempts = 0
+    code = multiplinput()
     while satisfactory == False:
-        fixCode(purpose, attempts, models)
+        fixCode("Fix this code in python", attempts, models, code)
         satisfactorychoice = print("That was the code! Was the code satisfactory? (y/N)")
         if satisfactorychoice == "y":
             satisfactory = True
@@ -55,15 +69,19 @@ def prototype(purpose, models):
     
 
 def optimize(purpose, models):
+    satisfactory = False
     attempts = 0
-    while(True):
-        fixCode(purpose, attempts, models)
-        if input("Was the code optimized? (y/N)") ==  "y":
-            break
+    code = multiplinput
+    while satisfactory == False:
+        fixCode("Optimize this code", attempts, models, code)
+        satisfactorychoice = print("That was the code! Was the code satisfactory? (y/N)")
+        if satisfactorychoice == "y":
+            satisfactory = True
         else:
-            attempts += 1
-    print("Thank you for trying the code out!")
-
+            retrychoice = input("Sorry to hear that. Want to try again? (y/N)")
+            if retrychoice == "y":
+                attempts += 1
+    print("Have a nice day!")
 
 
 def main():
