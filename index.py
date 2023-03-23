@@ -4,8 +4,7 @@ import time
 import openai
 import json
 
-openai.api_key = "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"
-
+openai.api_key = KEY
 models = ["code-cushman-001", "code-davinci-002"]  
 
 def multiplinput():
